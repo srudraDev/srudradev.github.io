@@ -1,6 +1,3 @@
-# Content collections
-.astro
-
 # build output
 dist/
 

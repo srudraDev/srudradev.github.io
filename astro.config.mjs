@@ -6,8 +6,8 @@ import sitemap from "@astrojs/sitemap";
 // https://astro.build/config
 export default defineConfig({
   integrations: [tailwind(), sitemap()],
-  site: "https://moofywoofy.github.io",
-  base: "/Bob-blog/",
+  site: "https://adhira-ch.github.io",
+  base: "/",
   markdown: {
     shikiConfig: {
       theme: "one-dark-pro",
@@ -16,5 +16,4 @@ export default defineConfig({
     },
   },
   trailingSlash: "always",
-  scopedStyleStrategy: 'where',
 });

@@ -1,5 +1,4 @@
 ---
-import { ViewTransitions } from "astro:transitions";
 import config from "src/config";
 export interface Props {
   title: string,
@@ -13,7 +12,6 @@ const baseSite = import.meta.env.BASE_URL
 ---
 
 <title>{title}</title>
-<ViewTransitions />
 <meta charset="UTF-8">
 
 <meta name="author" content={authorName} />
@@ -51,13 +49,9 @@ const baseSite = import.meta.env.BASE_URL
 <link rel="shortcut icon" href={baseSite + icon} type="image/x-icon">
 
 <script is:inline>
-  function setDataThemeAttribute(){
-    if (localStorage.theme === 'night' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-      document.querySelector('html').setAttribute('data-theme', 'night');
-    } else {
-      document.querySelector('html').setAttribute('data-theme', 'cmyk');
-    }
+  if (localStorage.theme === 'night' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    document.querySelector('html').setAttribute('data-theme', 'night');
+  } else {
+    document.querySelector('html').setAttribute('data-theme', 'cmyk');
   }
-  setDataThemeAttribute();
-  document.addEventListener('astro:after-swap', setDataThemeAttribute);
 </script>
