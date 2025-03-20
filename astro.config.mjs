@@ -6,7 +6,7 @@ import sitemap from "@astrojs/sitemap";
 // https://astro.build/config
 export default defineConfig({
   integrations: [tailwind(), sitemap()],
-  site: "https://adhira-ch.github.io",
+  site: "https://srudraDev.github.io",
   base: "/",
   markdown: {
     shikiConfig: {
