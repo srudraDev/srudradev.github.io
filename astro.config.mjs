@@ -7,7 +7,7 @@ import sitemap from "@astrojs/sitemap";
 export default defineConfig({
   integrations: [tailwind(), sitemap()],
   site: "https://srudraDev.github.io",
-  base: "/",
+  base: "/suhartaRudra/",
   markdown: {
     shikiConfig: {
       theme: "one-dark-pro",
