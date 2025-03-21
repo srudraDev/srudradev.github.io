@@ -1,0 +1,125 @@
+<h2 class="mx-auto text-center mb-8 bg-gradient-to-r from-cyan-500 via-cyan-700 to-cyan-900 text-transparent bg-clip-text text-4xl border-b-2 border-cyan-600 font-semibold w-fit">
+    Experience
+</h2>
+<section>
+    <div class="card shadow-2xl rounded-lg p-6">
+        <!-- Card Header with Tabs -->
+        <div class="flex justify-between items-center mb-4">
+            <div class="flex space-x-4">
+                <button
+                    class="px-4 py-2 text-gray-500 hover:text-gray-700 focus:outline-none active:text-gray-900"
+                    data-tab="tab1"
+                >
+                    ADP
+                </button>
+            </div>
+        </div>
+
+        <!-- Card Content -->
+        <div class="card-content">
+            <!-- Experience 1 -->
+            <div class="tab-content hidden" id="tab1">
+                <div class="float-end">
+                    <small>May 2024 - August 2024</small>
+                </div>
+                <h5 class="card-title">Software Engineer Intern</h5>
+                <a href="https://www.adp.com" target="_blank">
+                    <h6><strong><em>ADP</em></strong></h6>
+                </a>
+                <div class="py-1 education-content">
+                    <ul>
+                        <li>Description & Accomplishments:
+                            <ul>
+                                <li>&#9; - Deployed an internal CRUD dashboard to monitor POST calls of state unemployment insurance rate changes, improving visibility and tracking of client updates by 35% using React.</li>
+                                <li>&#9; - Automated end-to-end (E2E) test cases for HR and Payroll by leveraging Excel data to ensure accuracy, which eliminated 10 hours per week of manual testing using Java and Cucumber.</li>
+                                <li>&#9; - Leveraged Git and Agile workflows to submit multiple pull requests and integrate code into company codebase using Bitbucket and Jira.</li>
+                                <li>&#9; - Designing and developing a Generative AI Prototype Analytics Dashboard to showcase the internal sector-wide generative AI market and progression.</li>
+                                <li>&#9; - Presented projects to upper management and tech leaders of ADP.</li>
+                            </ul>
+                        </li>
+                        <p>Skills: React · Java · Data Analytics · Data Structures · Automations · Internal Tools · Unit Testing · RESTful APIs</p>
+                    </ul>
+                </div>
+            </div>
+            <!-- Experience 2 -->
+            <!-- <div class="tab-content hidden" id="tab2">
+                <div class="float-end">
+                    <small>Jan 2025 - April 2025</small>
+                </div>
+                <h5 class="card-title">Full-Stack Software Developer</h5>
+                <a href="#">
+                    <h6><strong><em>Employee Name</em></strong></h6>
+                </a>
+                <div class="py-1 education-content">
+                    <ul>
+                        <li>
+                            -
+                        </li>
+                        <li>
+                            -
+                        </li>
+                        <li>
+                            -
+                        </li>
+                        <li>
+                            -
+                        </li>
+                    </ul>
+                </div>
+                <p>Skills: </p>
+            </div> -->
+        </div>
+    </div>
+<section>
+<script>
+    // Get all tab buttons and tab content elements
+    const tabButtons = document.querySelectorAll('[data-tab]');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    // Add click event listeners to each tab button
+    tabButtons.forEach(tabButton => {
+        tabButton.addEventListener('click', () => {
+            const tabId = tabButton.getAttribute('data-tab');
+
+            // Hide all tab content elements
+            tabContents.forEach(tabContent => {
+                tabContent.classList.add('hidden');
+            });
+
+            // Show the selected tab content
+            document.getElementById(tabId).classList.remove('hidden');
+
+            // Change the text color of the clicked tab button to cyan
+            tabButtons.forEach(button => {
+                if (button === tabButton) {
+                    button.style.color = 'red';
+                } else {
+                    button.style.color = ''; // Reset color for other buttons
+                }
+            });
+        });
+    });
+
+    // Function to toggle a specific tab
+    function toggleTab(tabId: string) {
+        // Hide all tab content elements
+        tabContents.forEach(tabContent => {
+            tabContent.classList.add('hidden');
+        });
+
+        // Show the selected tab content
+        document.getElementById(tabId).classList.remove('hidden');
+
+        // Change the text color of the corresponding tab button to cyan
+        tabButtons.forEach(button => {
+            if (button.getAttribute('data-tab') === tabId) {
+                button.style.color = 'darkcyan';
+            } else {
+                button.style.color = ''; // Reset color for other buttons
+            }
+        });
+    }
+
+    // Show the default tab (ADP) when the script runs
+    toggleTab('tab1');
+</script>
