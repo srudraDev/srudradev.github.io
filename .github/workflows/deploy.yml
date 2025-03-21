@@ -15,7 +15,8 @@ jobs:
     # Allow this job to push changes to your repository
     permissions:
       contents: write
-
+      pages: write
+      id-token: write
     steps:
       - name: Check out your repository using git
         uses: actions/checkout@v2
