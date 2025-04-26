@@ -52,12 +52,11 @@ const { metaData: { authorName } } = config;
       </label>
 
       <nav class="mr-6">
-        <ul id="primary-nav" class="flex grow gap-8 items-center justify-center z-[100]" data-visible="false">
-          <li>
+        <div id="primary-nav" class="flex grow gap-8 items-center justify-center z-[100]" data-visible="false">
             <!-- Theme, Light/Dark mode -->
-            <label id="themeSetting" class="swap swap-rotate">
+            <label class="swap swap-rotate theme-controller" data-toggle-theme="cmyk,night">
               <!-- this hidden checkbox controls the state -->
-              <input type="checkbox" class="mode-toggle" />
+              <input type="checkbox" class="swap-input hidden" />
               <!-- sun icon -->
               <svg data-set-theme="cmyk" data-act-class="ACTIVECLASS" class="swap-on fill-current w-6 h-6"
                 xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -71,8 +70,7 @@ const { metaData: { authorName } } = config;
                   d="M21.64,13a1,1,0,0,0-1.05-.14,8.05,8.05,0,0,1-3.37.73A8.15,8.15,0,0,1,9.08,5.49a8.59,8.59,0,0,1,.25-2A1,1,0,0,0,8,2.36,10.14,10.14,0,1,0,22,14.05,1,1,0,0,0,21.64,13Zm-9.5,6.69A8.14,8.14,0,0,1,7.08,5.22v.27A10.15,10.15,0,0,0,17.22,15.63a9.79,9.79,0,0,0,2.1-.22A8.11,8.11,0,0,1,12.14,19.73Z" />
               </svg>
             </label>
-          </li>
-        </ul>
+        </div>
       </nav>
     </header>
 
@@ -94,7 +92,7 @@ const { metaData: { authorName } } = config;
 
 </html>
 
-<style>
+<style is:global>
   html {
     --svg-totalLength: 844;
   }
@@ -116,7 +114,7 @@ const { metaData: { authorName } } = config;
 
   /* Mobile Navigation */
   @media (max-width:640px) {
-    ul#primary-nav {
+    #primary-nav {
       position: fixed;
       inset: 0 0 0 30%;
       flex-direction: column;
@@ -127,7 +125,7 @@ const { metaData: { authorName } } = config;
       backdrop-filter: blur(2rem);
     }
 
-    ul#primary-nav[data-visible=true] {
+    #primary-nav[data-visible=true] {
       transform: translateX(0);
     }
 
@@ -173,7 +171,13 @@ const { metaData: { authorName } } = config;
     background-color: hsl(var(--a));
     color: hsl(var(--ac));
   }
+  html, body{
+    transition: background-color 0.7s ease, color 0.5s ease;
+  }
 
+  svg, path, text {
+    transition: fill 0.5s ease;
+  }
   /* Scrollbar */
   ::-webkit-scrollbar {
     width: auto;
@@ -201,18 +205,31 @@ const { metaData: { authorName } } = config;
     }
   }
   /* Dark mode */
-  html[data-theme=night] .dark\:text-white {
-    fill: white;
+  html[data-theme=night] {
+    background-color: #0d1117; /* deep dark navy (GitHub dark mode background) */
   }
 
   /* Light mode */
-  html[data-theme=cmyk] .text-black {
-    fill: black;
+  html[data-theme=cmyk] {
+    background-color: #ffffff;
+  }
+  /* Only show the correct icon manually based on checkbox */
+  .swap input:checked ~ .swap-on {
+    display: block;
+  }
+  .swap input:checked ~ .swap-off {
+    display: none;
+  }
+  .swap input:not(:checked) ~ .swap-on {
+    display: none;
+  }
+  .swap input:not(:checked) ~ .swap-off {
+    display: block;
   }
 </style>
 <script>
   // Navigation / Hamburger menu - control
-  const nav = document.querySelector<HTMLUListElement>('#primary-nav')
+  const nav = document.querySelector<HTMLDivElement>('#primary-nav')
   const navToggle = document.querySelector<HTMLLabelElement>('#nav-toggle')
   const navToggleInput = document.querySelector<HTMLInputElement>('#nav-toggle input')
 
@@ -251,27 +268,6 @@ const { metaData: { authorName } } = config;
       scrollButton.style.display = "none";
     }
   });
-
-
-  // Theme stuff
   import { themeChange } from "theme-change";
   themeChange();
-  if (localStorage['theme'] === "cmyk" || document.querySelector('html').getAttribute('data-theme') === 'cmyk') {
-    document.querySelector<HTMLInputElement>('#themeSetting > input').checked = true;
-  }
-  const modeToggle = document.querySelector(".mode-toggle");
-  const body = document.querySelector("html");
-
-  modeToggle.addEventListener("click", () => {
-      body.classList.toggle("dark");
-      if (body.classList.contains("dark")) {
-          // Dark mode: Update data-theme attribute
-          body.setAttribute("data-theme", "night");
-          localStorage.setItem('theme', 'night');
-      } else {
-          // Light mode: Update data-theme attribute
-          body.setAttribute("data-theme", "cmyk");
-          localStorage.setItem('theme', 'cmyk');
-      }
-  });
 </script>

@@ -34,10 +34,10 @@ module.exports = {
       },
     },
   },
-  plugins: [require("@tailwindcss/typography"), require("daisyui"), require("@tailwindcss/line-clamp")],
+  plugins: [require("@tailwindcss/typography"), require("daisyui")],
   // daisyUI config (optional)
   daisyui: {
-    theme: ["cmyk", "night"],
+    themes: ["cmyk", "night"],
     darkTheme: "night",
   },
   darkMode: ["class", '[data-theme="night"]'],
