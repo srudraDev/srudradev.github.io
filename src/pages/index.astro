@@ -8,9 +8,11 @@ import Projects from "@components/Projects.astro";
 import BaseLayout from "@layouts/BaseLayout.astro";
 import config from "src/config";
 import { Frontmatter, sortDateDescending, capitalizeString } from "src/misc";
+import { MarkdownInstance } from "astro/dist/types/public";
 
-const allPosts = await Astro.glob<Frontmatter>('../pages/blog/articles/*.md');
-const posts = sortDateDescending(allPosts.filter((post) => post.frontmatter.draft != true && post.frontmatter.tags.includes('featured'))).slice(0, 3);
+const allPosts = Object.entries(import.meta.glob<MarkdownInstance<Frontmatter>>('../blog/articles/*.md', { eager: true }))
+	.map(([_, post]) => post);
+const posts = sortDateDescending(allPosts.filter((post) => post.frontmatter.draft !== true && post.frontmatter.tags.includes('featured'))).slice(0, 3);
 const { metaData: { authorName }, social } = config;
 ---
 
