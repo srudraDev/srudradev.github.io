@@ -5,14 +5,7 @@ A responsive, personal blog template, built with Astro and Tailwind CSS.
 
 
 ## Features
-
-- A full featured blog with tagging
 - Dark mode and light mode with daisyUI
-- Site configuration
-- Supports draft page
-- Pagination for blog and tags page
-- SEO friendly
-- Client-Side search
 
 ## 🧞 Commands
 
