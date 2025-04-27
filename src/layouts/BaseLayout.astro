@@ -3,6 +3,7 @@ import BaseHead from "./BaseHead.astro";
 import NavListItem from "@components/NavListItem.astro";
 import pageSize from "src/config.js";
 import config from "src/config.js";
+import "../styles/global.css";
 export interface Props {
   title: string,
   description?: string,
@@ -212,6 +213,14 @@ const { metaData: { authorName } } = config;
   /* Light mode */
   html[data-theme=cmyk] {
     background-color: #ffffff;
+  }
+  /* Handle text color based on theme */
+  html[data-theme="cmyk"] body {
+    color: #000;
+  }
+
+  html[data-theme="night"] body {
+    color: #fff;
   }
   /* Only show the correct icon manually based on checkbox */
   .swap input:checked ~ .swap-on {
