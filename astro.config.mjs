@@ -7,7 +7,7 @@ export default defineConfig({
   output: "static",
   integrations: [tailwind(), sitemap()],
   site: "https://srudraDev.github.io",
-  base: "/suhartaRudra/",
+  base: "/",
   markdown: {
     shikiConfig: {
       theme: "one-dark-pro",
