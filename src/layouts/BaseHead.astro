@@ -49,9 +49,12 @@ const baseSite = import.meta.env.BASE_URL
 <link rel="shortcut icon" href={baseSite + icon} type="image/x-icon">
 
 <script is:inline>
-  if (localStorage.theme === 'night' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-    document.querySelector('html').setAttribute('data-theme', 'night');
-  } else {
-    document.querySelector('html').setAttribute('data-theme', 'cmyk');
-  }
+  (function () {
+    var stored = localStorage.getItem('theme');
+    var theme = stored
+      ? stored
+      : (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'night' : 'cmyk');
+    document.querySelector('html').setAttribute('data-theme', theme);
+    if (!stored) localStorage.setItem('theme', theme);
+  })();
 </script>
