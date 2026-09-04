@@ -18,14 +18,14 @@ const { metaData: { authorName }, social } = config;
 
 <BaseLayout title="Suharta Rudra" activeLink="home">
 
-	<section class="flex flex-col sm:flex-row justify-center max-w-[90%] w-[52rem] mx-auto gap-12 mb-12">
+	<section class="flex flex-col sm:flex-row justify-center max-w-[90%] w-[52rem] mx-auto gap-8 sm:gap-12 mb-12">
 		<img width="200" height="200" src="images/profilePic.jfif" alt="avatar"
 			class="rounded-md h-fit self-center justify-self-center">
-		<div class="flex flex-col flex-wrap flex-grow">
+		<div class="flex flex-col flex-wrap flex-grow min-w-0">
 			<h1
-				class="text-center bg-gradient-to-r from-cyan-500 via-cyan-700 to-cyan-900 bg-clip-text text-transparent text-5xl mb-[0.7em]">
+				class="text-center bg-gradient-to-r from-cyan-500 via-cyan-700 to-cyan-900 bg-clip-text text-transparent text-3xl sm:text-5xl mb-[0.7em] break-words">
 				Hi there, I'm <span class="font-bold">{authorName}</span></h1>
-			<div class="flex flex-wrap justify-center gap-5 mr-10">
+			<div class="flex flex-wrap justify-center gap-5 social-icons">
 				{social.map(ele => <a class="w-8 h-8 flex scale-1 hover:scale-125 transition-[scale] justify-center" href={ele.link}
 					target="_blank" rel="noreferrer noopener">
 					<span class="sr-only">{`Link to my ${ele.sr?? capitalizeString(ele.link.replace(/.+\/\/|www.|\..+/g, ''))} account`}</span>
@@ -44,3 +44,15 @@ const { metaData: { authorName }, social } = config;
 	<br>
 	<Education />
 </BaseLayout>
+
+<style>
+	/* Dark mode social icon colors */
+	:global(html[data-theme="night"] .social-icons a:nth-child(1) svg),
+	:global(html[data-theme="night"] .social-icons a:nth-child(1) svg path) {
+		fill: #e6edf3;
+	}
+	:global(html[data-theme="night"] .social-icons a:nth-child(2) svg),
+	:global(html[data-theme="night"] .social-icons a:nth-child(2) svg path) {
+		fill: #e6edf3 !important;
+	}
+</style>

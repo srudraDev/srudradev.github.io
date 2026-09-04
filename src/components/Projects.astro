@@ -185,7 +185,7 @@
     <div class="cf-dots" role="tablist" aria-label="Choose project" data-cf-dots></div>
 </section>
 
-<style>
+<style is:global>
     /* Base layout: works even before JS loads. Without JS this is a horizontal scroll row. */
     .projects-coverflow {
         position: relative;
@@ -254,9 +254,11 @@
         pointer-events: none;
     }
 
-    /* Center card must be fully opaque so nothing behind bleeds through */
-    [data-cf-enhanced] .cf-slide[data-pos="center"] > .card {
-        background-color: hsl(var(--b1));
+    /* Dark mode: keep coverflow side cards visible */
+    :global(html[data-theme="night"]) [data-cf-enhanced] .cf-slide[data-pos="left"],
+    :global(html[data-theme="night"]) [data-cf-enhanced] .cf-slide[data-pos="right"] {
+        opacity: 0.7;
+        filter: none;
     }
 
     /* When enhanced, stack slides so transforms overlap in the same space */
@@ -291,18 +293,76 @@
     [data-cf-enhanced] .cf-dots { display: flex; }
 
     .cf-dot {
-        width: 0.65rem;
-        height: 0.65rem;
+        width: 0.7rem;
+        height: 0.7rem;
         border-radius: 9999px;
-        background-color: hsl(var(--bc) / 0.3);
-        transition: background-color 0.3s ease, transform 0.3s ease;
+        background-color: currentColor;
+        opacity: 0.35;
+        transition: opacity 0.3s ease, background-color 0.3s ease, width 0.3s ease;
         cursor: pointer;
         border: none;
         padding: 0;
     }
+    .cf-dot:hover { opacity: 0.6; }
     .cf-dot[aria-selected="true"] {
-        background-color: hsl(var(--p));
-        transform: scale(1.3);
+        background-color: #0891b2; /* cyan-600, matches the section accent */
+        opacity: 1;
+        width: 1.5rem; /* active dot elongates for a clear indicator */
+    }
+
+    /* Mobile: the coverflow side-peeks break in a narrow viewport, so show a
+       single clean card. Swipe left or right to deal it away; no arrows. */
+    @media (max-width: 640px) {
+        .projects-coverflow {
+            padding-inline: 0.75rem;
+        }
+        /* Hide the prev/next arrows on mobile */
+        [data-cf-enhanced] .cf-nav { display: none !important; }
+
+        [data-cf-enhanced] .cf-viewport {
+            perspective: none;
+            overflow: visible;
+        }
+        [data-cf-enhanced] .cf-track {
+            padding-top: 0.5rem;
+            padding-bottom: 1.5rem;
+        }
+
+        [data-cf-enhanced] .cf-slide {
+            transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.35s ease;
+        }
+        /* Front card: full, on top, own shadow. */
+        [data-cf-enhanced] .cf-slide[data-pos="center"] {
+            opacity: 1;
+            transform: none;
+            z-index: 5;
+            pointer-events: auto;
+        }
+        [data-cf-enhanced] .cf-slide[data-pos="center"] > .card {
+            border: 1px solid rgba(128, 128, 128, 0.3) !important;
+            box-shadow: 0 8px 22px -6px rgba(0, 0, 0, 0.28) !important;
+        }
+
+        /* All non-front cards are fully hidden — no peeking shells, so nothing
+           can ghost through or overlap. Clean single card that swipes away. */
+        [data-cf-enhanced] .cf-slide:not([data-pos="center"]) {
+            opacity: 0;
+            transform: scale(0.94);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Deal-away: fly ONLY the front card in the swiped direction. */
+        [data-cf-enhanced] .cf-slide[data-dealing="left"] {
+            transform: translateX(-120%) rotate(-10deg) !important;
+            opacity: 0 !important;
+            z-index: 6 !important;
+        }
+        [data-cf-enhanced] .cf-slide[data-dealing="right"] {
+            transform: translateX(120%) rotate(10deg) !important;
+            opacity: 0 !important;
+            z-index: 6 !important;
+        }
     }
 
     /* Fallback for no-JS or reduced motion: simple responsive grid like before */
@@ -351,6 +411,8 @@
         let index = 0;
         const count = slides.length;
         let autoplayTimer: number | undefined;
+        let isHovered = false;
+        let isFocused = false;
         const AUTOPLAY_MS = 5000;
 
         // Build dots
@@ -394,6 +456,7 @@
         function prev() { goTo(index - 1); }
 
         function startAutoplay() {
+            if (isMobile()) return; // no auto-change on mobile
             stopAutoplay();
             autoplayTimer = window.setInterval(next, AUTOPLAY_MS);
         }
@@ -402,6 +465,8 @@
             autoplayTimer = undefined;
         }
         function restartAutoplay() {
+            // Don't resume while the user is actively interacting (hover/focus);
+            if (isHovered || isFocused) return;
             startAutoplay();
         }
 
@@ -415,16 +480,26 @@
         });
 
         // Pause autoplay on hover/focus
-        root.addEventListener("mouseenter", stopAutoplay);
-        root.addEventListener("mouseleave", startAutoplay);
-        root.addEventListener("focusin", stopAutoplay);
-        root.addEventListener("focusout", startAutoplay);
+        root.addEventListener("mouseenter", () => { isHovered = true; stopAutoplay(); });
+        root.addEventListener("mouseleave", () => { isHovered = false; startAutoplay(); });
+        root.addEventListener("focusin", () => { isFocused = true; stopAutoplay(); });
+        root.addEventListener("focusout", (e) => {
+            // Only resume when focus actually leaves the carousel, not when moving
+            // between elements within it (e.g. dot to dot).
+            if (root.contains(e.relatedTarget as Node)) return;
+            isFocused = false;
+            startAutoplay();
+        });
 
-        // Touch swipe
+        // Touch swipe. On mobile, a horizontal swipe (either direction) deals
+        // the current card away in that direction and advances.
+        const isMobile = () => window.matchMedia("(max-width: 640px)").matches;
         let startX = 0;
+        let startY = 0;
         let swiping = false;
         root.addEventListener("touchstart", (e) => {
             startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
             swiping = true;
             stopAutoplay();
         }, { passive: true });
@@ -432,9 +507,31 @@
             if (!swiping) return;
             swiping = false;
             const dx = e.changedTouches[0].clientX - startX;
-            if (Math.abs(dx) > 40) { dx < 0 ? next() : prev(); }
-            startAutoplay();
+            const dy = e.changedTouches[0].clientY - startY;
+            // ignore mostly-vertical gestures (let the page scroll)
+            if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy)) { startAutoplay(); return; }
+
+            if (isMobile()) {
+                // dealing cards: fly the card the direction it was swiped, then advance
+                dealAway(dx < 0 ? "left" : "right");
+            } else {
+                dx < 0 ? next() : prev();
+                startAutoplay();
+            }
         });
+
+        // Animate the current front card flying off in the swiped direction, then advance.
+        function dealAway(dir: "left" | "right") {
+            const front = slides[index];
+            front.setAttribute("data-dealing", dir);
+            const cleanup = () => {
+                front.removeAttribute("data-dealing");
+                front.removeEventListener("transitionend", cleanup);
+                next();
+            };
+            front.addEventListener("transitionend", cleanup);
+            window.setTimeout(() => { if (front.hasAttribute("data-dealing")) cleanup(); }, 500);
+        }
 
         // Pause when tab is hidden
         document.addEventListener("visibilitychange", () => {
@@ -445,7 +542,7 @@
         root.setAttribute("tabindex", "0");
 
         render();
-        startAutoplay();
+        if (!isMobile()) startAutoplay();
     }
 
     document.querySelectorAll<HTMLElement>("[data-coverflow]").forEach(initCoverflow);
